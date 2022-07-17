@@ -1,0 +1,8 @@
+.env
+todo
+nginx/logs/*
+!nginx/logs/.gitkeep
+mysql/8.0/logs/*
+mysql/8.0/dump/*
+!mysql/8.0/logs/.gitkeep
+!mysql/8.0/dump/.gitkeep

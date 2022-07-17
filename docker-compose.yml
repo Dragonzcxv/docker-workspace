@@ -1,0 +1,60 @@
+version: '3'
+
+networks:
+  backend:
+
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "${NGINX_PORT}:80"
+    volumes:
+      - ./projects:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx/
+    depends_on:
+      - php-7.1
+      - php-7.3
+      - mysql-8
+      - mysql-5.7
+      - redis
+      - mongo
+      - postgres
+    environment:
+      TZ: ${WORKSPACE_TIMEZONE}
+    networks:
+      - backend
+
+  php-8.0:
+    build:
+      context: images/php/8.0
+      dockerfile: Dockerfile
+      args:
+        TZ: ${WORKSPACE_TIMEZONE}
+    working_dir: /var/www
+    container_name: php-8.0
+    volumes:
+      - ./.ssh:/home/www-data/.ssh
+      - ./projects:/var/www
+    ports:
+      - "${PHP_8_0_PORT}:9000"
+    networks:
+      - backend
+    #extra_hosts:
+    #  - 'project-1.localhost:172.30.214.125'
+
+  mysql-8:
+    image: mysql:8.0
+    container_name: mysql-8
+    volumes:
+      - ./mysql/8.0/conf.d:/etc/mysql/conf.d
+      - ./mysql/8.0/logs:/var/log/mysql/
+      - ./mysql/8.0/dump:/dump
+    ports:
+      - "${MYSQL_8_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: ${WORKSPACE_TIMEZONE}
+    networks:
+      - backend
