@@ -2,6 +2,7 @@ version: '3'
 
 networks:
   backend:
+  frontend:
 
 services:
   nginx:
@@ -60,3 +61,20 @@ services:
       TZ: ${WORKSPACE_TIMEZONE}
     networks:
       - backend
+  node-18:
+    build:
+      context: images/node/18
+      dockerfile: Dockerfile
+      args:
+        TZ: ${WORKSPACE_TIMEZONE}
+    working_dir: /var/www
+    stdin_open: true
+    tty: true
+    container_name: node-18
+    volumes:
+      - ./.ssh:/home/www-data/.ssh
+      - ./projects:/var/www
+    ports:
+      - "${NODE_18_PORT}:8080"
+    networks:
+      - frontend
