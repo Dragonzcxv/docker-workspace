@@ -14,14 +14,6 @@ services:
       - ./projects:/var/www
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
-    depends_on:
-      - php-7.1
-      - php-7.3
-      - mysql-8
-      - mysql-5.7
-      - redis
-      - mongo
-      - postgres
     environment:
       TZ: ${WORKSPACE_TIMEZONE}
     networks:
