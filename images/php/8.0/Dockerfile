@@ -1,5 +1,10 @@
 FROM php:8.0-fpm
 
+ARG USER_NAME USER_UID USER_GID TZ
+
+# Устанавливаем временной пояс
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt-get update && apt-get install -y \
         curl \
         wget \
@@ -18,7 +23,9 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install zip && \
     docker-php-ext-enable mcrypt
 
-# Install Composer
+# Устанавливаем композер
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /var/www/
+# Добавляем пользователя
+RUN groupadd --gid $USER_GID $USER_NAME \
+  && useradd --uid $USER_GID --gid $USER_GID --shell /bin/bash --create-home $USER_NAME

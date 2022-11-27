@@ -6,16 +6,22 @@ networks:
 
 services:
   nginx:
-    image: nginx:1.22
+    build:
+      context: images/nginx/1.22
+      dockerfile: Dockerfile
+      args:
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+        TZ: ${WORKSPACE_TIMEZONE}
     container_name: nginx
+    working_dir: /home/${USER_NAME}
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ./projects:/var/www
+      - ./projects:/var/home/${USER_NAME}
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
-    environment:
-      TZ: ${WORKSPACE_TIMEZONE}
     networks:
       - backend
 
@@ -24,12 +30,15 @@ services:
       context: images/php/8.0
       dockerfile: Dockerfile
       args:
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
-    working_dir: /var/www
+    working_dir: /home/${USER_NAME}
     container_name: php-8.0
     volumes:
-      - ./.ssh:/home/www-data/.ssh
-      - ./projects:/var/www
+      - ./.ssh:/home/${USER_NAME}/.ssh
+      - ./projects:/home/${USER_NAME}
     ports:
       - "${PHP_8_0_PORT}:9000"
     networks:
@@ -38,7 +47,14 @@ services:
     #  - 'project-1.localhost:172.30.214.125'
 
   mysql-8:
-    image: mysql:8.0
+    build:
+      context: images/mysql/8.0
+      dockerfile: Dockerfile
+      args:
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+        TZ: ${WORKSPACE_TIMEZONE}
     container_name: mysql-8
     volumes:
       - ./mysql/8.0/conf.d:/etc/mysql/conf.d
@@ -49,22 +65,25 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_8_ROOT_PASSWORD}
       MYSQL_TCP_PORT: ${MYSQL_8_TCP_PORT}
-      TZ: ${WORKSPACE_TIMEZONE}
     networks:
       - backend
+
   node-18:
     build:
       context: images/node/18
       dockerfile: Dockerfile
       args:
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
     working_dir: /var/www
     stdin_open: true
     tty: true
     container_name: node-18
     volumes:
-      - ./.ssh:/home/www-data/.ssh
-      - ./projects:/var/www
+      - ./.ssh:/home/${USER_NAME}/.ssh
+      - ./projects:/home/${USER_NAME}
     ports:
       - "${NODE_18_PORT}:8080"
     networks:
