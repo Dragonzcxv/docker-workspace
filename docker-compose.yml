@@ -19,7 +19,7 @@ services:
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ./projects:/var/home/${USER_NAME}/projects
+      - ./projects:/home/${USER_NAME}/projects
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
     networks:
