@@ -15,11 +15,11 @@ services:
         USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
     container_name: nginx
-    working_dir: /home/${USER_NAME}
+    working_dir: /home/${USER_NAME}/site
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ./projects:/var/home/${USER_NAME}
+      - ./projects:/var/home/${USER_NAME}/site
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
     networks:
@@ -34,11 +34,10 @@ services:
         USER_UID: ${USER_UID}
         USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
-    working_dir: /home/${USER_NAME}
+    working_dir: /home/${USER_NAME}/site
     container_name: php-8.0
     volumes:
-      - ./.ssh:/home/${USER_NAME}/.ssh
-      - ./projects:/home/${USER_NAME}
+      - ./projects:/home/${USER_NAME}/site
     ports:
       - "${PHP_8_0_PORT}:9000"
     networks:
@@ -82,8 +81,7 @@ services:
     tty: true
     container_name: node-18
     volumes:
-      - ./.ssh:/home/${USER_NAME}/.ssh
-      - ./projects:/home/${USER_NAME}
+      - ./projects:/home/${USER_NAME}/site
     ports:
       - "${NODE_18_PORT}:8080"
     networks:
