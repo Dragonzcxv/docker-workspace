@@ -48,7 +48,6 @@ services:
       - "${MYSQL_8_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_8_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_8_DATABASE}
       MYSQL_TCP_PORT: ${MYSQL_8_TCP_PORT}
       TZ: ${WORKSPACE_TIMEZONE}
     networks:
