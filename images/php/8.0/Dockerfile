@@ -26,6 +26,6 @@ RUN apt-get update && apt-get install -y \
 # Устанавливаем композер
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Добавляем пользователя
-RUN groupadd --gid $USER_GID $USER_NAME \
-  && useradd --uid $USER_GID --gid $USER_GID --shell /bin/bash --create-home $USER_NAME
+# Меняем uid и gid пользователя www-data(под ним запускается php-fpm)
+RUN usermod  --uid $USER_UID www-data
+RUN groupmod --gid $USER_GID www-data
