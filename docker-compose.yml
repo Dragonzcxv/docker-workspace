@@ -82,6 +82,25 @@ services:
     networks:
       - project
 
+  mariadb-10.3: 
+    build:
+      context: images/mariadb/10.3
+      dockerfile: Dockerfile
+      args:
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+        TZ: ${WORKSPACE_TIMEZONE}
+    container_name: mariadb-10.3
+    volumes:
+      - ./mariadb/10.3/dump:/dump
+    ports:
+      - "${MARIADB_13_0_PORT}:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_13_0_ROOT_PASSWORD}
+    networks:
+      - project
+
   node-18:
     build:
       context: images/node/18
