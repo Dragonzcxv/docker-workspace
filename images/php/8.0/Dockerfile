@@ -6,6 +6,7 @@ ARG USER_NAME USER_UID USER_GID TZ
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y \
+		iputils-ping \
         curl \
         wget \
         libfreetype6-dev \
@@ -15,12 +16,12 @@ RUN apt-get update && apt-get install -y \
         libwebp-dev \
         libzip-dev && \
     pecl install mcrypt-1.0.5 && \
-    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp && \
     docker-php-ext-install gd && \
     docker-php-ext-install iconv && \
     docker-php-ext-install mysqli && \
     docker-php-ext-install pdo_mysql && \
     docker-php-ext-install zip && \
+    docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp && \
     docker-php-ext-enable mcrypt
 
 # Устанавливаем композер

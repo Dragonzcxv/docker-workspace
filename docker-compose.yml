@@ -1,8 +1,7 @@
 version: '3'
 
 networks:
-  backend:
-  frontend:
+  project:
 
 services:
   nginx:
@@ -23,7 +22,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
     networks:
-      - backend
+      - project
 
   php-8.0:
     build:
@@ -41,9 +40,25 @@ services:
     ports:
       - "${PHP_8_0_PORT}:9000"
     networks:
-      - backend
-    #extra_hosts:
-    #  - 'project-1.localhost:172.30.214.125'
+      - project
+
+  php-7.3:
+    build:
+      context: images/php/7.3
+      dockerfile: Dockerfile
+      args:
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+        TZ: ${WORKSPACE_TIMEZONE}
+    working_dir: /home/${USER_NAME}/projects
+    container_name: php-7.3
+    volumes:
+      - ./projects:/home/${USER_NAME}/projects
+    ports:
+      - "${PHP_7_3_PORT}:9000"
+    networks:
+      - project
 
   mysql-8:
     build:
@@ -65,7 +80,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_8_ROOT_PASSWORD}
       MYSQL_TCP_PORT: ${MYSQL_8_TCP_PORT}
     networks:
-      - backend
+      - project
 
   node-18:
     build:
@@ -85,4 +100,4 @@ services:
     ports:
       - "${NODE_18_PORT}:8080"
     networks:
-      - frontend
+      - project
