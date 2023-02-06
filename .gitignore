@@ -6,3 +6,7 @@ mysql/8.0/logs/*
 mysql/8.0/dump/*
 !mysql/8.0/logs/.gitkeep
 !mysql/8.0/dump/.gitkeep
+projects/*
+!projects/default.localhost
+nginx/conf.d/*
+!nginx/conf.d/default.conf
