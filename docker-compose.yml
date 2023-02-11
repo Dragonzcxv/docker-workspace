@@ -22,7 +22,11 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
     networks:
-      - project
+      project:
+        # Можно добавить домены проектов, чтобы можно было на них стучать из php контейнера
+        # aliases:
+        #   - project1.localhost
+        #   - project2.localhost
 
   php-8.0:
     build:

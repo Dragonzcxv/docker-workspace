@@ -13,8 +13,10 @@ RUN apt-get update && apt-get install -y \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         mc \
+        zlib1g-dev \
         libwebp-dev \
-        libzip-dev && \
+        libzip-dev \
+        sendmail && \
     pecl install mcrypt-1.0.5 && \
     docker-php-ext-install iconv && \
     docker-php-ext-install mysqli && \
@@ -22,7 +24,15 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install zip && \
     docker-php-ext-configure gd --enable-gd --prefix=/usr --with-freetype --with-jpeg --with-webp && \
     docker-php-ext-install -j$(nproc) gd && \
+    docker-php-ext-configure opcache --enable-opcache && \
+    docker-php-ext-install opcache && \
     docker-php-ext-enable mcrypt
+
+# Настраиваем sendmail
+RUN echo "sendmail_path=/usr/sbin/sendmail -t -i" >> /usr/local/etc/php/conf.d/sendmail.ini 
+RUN sed -i '/#!\/bin\/sh/aservice sendmail restart' /usr/local/bin/docker-php-entrypoint
+RUN sed -i '/#!\/bin\/sh/aecho "$(hostname -i)\t$(hostname) $(hostname).localhost" >> /etc/hosts' /usr/local/bin/docker-php-entrypoint
+
 
 # Устанавливаем композер
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
