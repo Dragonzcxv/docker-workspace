@@ -1,4 +1,5 @@
 <?php
+# Параметры подключение к базе указываются в env
 $conn = mysqli_connect("mysql\-8", "root", "root");
 
 if ($conn === false) {
