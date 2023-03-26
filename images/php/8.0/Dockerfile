@@ -1,6 +1,6 @@
 FROM php:8.0-fpm
 
-ARG USER_NAME USER_UID USER_GID TZ
+ARG USER_UID USER_GID TZ
 
 # Устанавливаем временной пояс
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-enable mcrypt
 
 # Настраиваем sendmail
-RUN echo "sendmail_path=/usr/sbin/sendmail -t -i" >> /usr/local/etc/php/conf.d/sendmail.ini 
+RUN echo "sendmail_path=/usr/sbin/sendmail -t -i -f postmaster@mydomen.ru" >> /usr/local/etc/php/conf.d/sendmail.ini 
 RUN sed -i '/#!\/bin\/sh/aservice sendmail restart' /usr/local/bin/docker-php-entrypoint
 RUN sed -i '/#!\/bin\/sh/aecho "$(hostname -i)\t$(hostname) $(hostname).localhost" >> /etc/hosts' /usr/local/bin/docker-php-entrypoint
 
