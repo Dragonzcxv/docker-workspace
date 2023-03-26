@@ -1,6 +1,6 @@
 FROM php:7.3-fpm
 
-ARG USER_NAME USER_UID USER_GID TZ
+ARG USER_UID USER_GID TZ
 
 # Устанавливаем временной пояс
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

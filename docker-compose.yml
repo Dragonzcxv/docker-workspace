@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  project:
+  projects:
 
 services:
   nginx:
@@ -9,70 +9,62 @@ services:
       context: images/nginx/1.22
       dockerfile: Dockerfile
       args:
-        USER_NAME: ${USER_NAME}
-        USER_UID: ${USER_UID}
-        USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
     container_name: nginx
-    working_dir: /home/${USER_NAME}/projects
+    working_dir: /www/projects
     ports:
       - "${NGINX_PORT}:80"
     volumes:
-      - ./projects:/home/${USER_NAME}/projects
+      - ./projects:/www/projects
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
     networks:
-      project:
+      projects:
         # Можно добавить домены проектов, чтобы можно было на них стучать из php контейнера
-        aliases:
-          - akb-priem.localhost
-          - lazardent.localhost
+        # aliases:
+        #   - projects.localhost
+        #   - projects.localhost
 
   php-8.0:
     build:
       context: images/php/8.0
       dockerfile: Dockerfile
       args:
-        USER_NAME: ${USER_NAME}
+        TZ: ${WORKSPACE_TIMEZONE}
         USER_UID: ${USER_UID}
         USER_GID: ${USER_GID}
-        TZ: ${WORKSPACE_TIMEZONE}
-    working_dir: /home/${USER_NAME}/projects
+    working_dir: /www/projects
     container_name: php-8.0
     volumes:
-      - ./projects:/home/${USER_NAME}/projects
+      - ./projects:/www/projects
     ports:
       - "${PHP_8_0_PORT}:9000"
       - "25:25"
     networks:
-      - project
+      - projects
 
   php-7.3:
     build:
       context: images/php/7.3
       dockerfile: Dockerfile
       args:
-        USER_NAME: ${USER_NAME}
         USER_UID: ${USER_UID}
         USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
-    working_dir: /home/${USER_NAME}/projects
+    working_dir: /www/projects
     container_name: php-7.3
     volumes:
-      - ./projects:/home/${USER_NAME}/projects
+      - ./projects:/www/projects
     ports:
       - "${PHP_7_3_PORT}:9000"
     networks:
-      - project
+      - projects
 
   mysql-8:
     build:
       context: images/mysql/8.0
       dockerfile: Dockerfile
       args:
-        USER_NAME: ${USER_NAME}
-        USER_UID: ${USER_UID}
-        USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
     container_name: mysql-8
     volumes:
@@ -85,16 +77,32 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_8_ROOT_PASSWORD}
       MYSQL_TCP_PORT: ${MYSQL_8_TCP_PORT}
     networks:
-      - project
+      - projects
+
+  mysql-5.7:
+    build:
+      context: images/mysql/5.7
+      dockerfile: Dockerfile
+      args:
+        TZ: ${WORKSPACE_TIMEZONE}
+    container_name: mysql-5.7
+    volumes:
+      - ./mysql/5.7/conf.d:/etc/mysql/conf.d
+      - ./mysql/5.7/logs:/var/log/mysql/
+      - ./mysql/5.7/dump:/dump
+    ports:
+      - "${MYSQL_5_7_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_5_7_ROOT_PASSWORD}
+      MYSQL_TCP_PORT: ${MYSQL_5_7_TCP_PORT}
+    networks:
+      - projects
 
   mariadb-10.3: 
     build:
       context: images/mariadb/10.3
       dockerfile: Dockerfile
       args:
-        USER_NAME: ${USER_NAME}
-        USER_UID: ${USER_UID}
-        USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
     container_name: mariadb-10.3
     volumes:
@@ -104,24 +112,23 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_13_0_ROOT_PASSWORD}
     networks:
-      - project
+      - projects
 
   node-18:
     build:
       context: images/node/18
       dockerfile: Dockerfile
       args:
-        USER_NAME: ${USER_NAME}
         USER_UID: ${USER_UID}
         USER_GID: ${USER_GID}
         TZ: ${WORKSPACE_TIMEZONE}
-    working_dir: /home/${USER_NAME}/projects
+    working_dir: /www/projects
     stdin_open: true
     tty: true
     container_name: node-18
     volumes:
-      - ./projects:/home/${USER_NAME}/projects
+      - ./projects:/www/projects
     ports:
       - "${NODE_18_PORT}:8080"
     networks:
-      - project
+      - projects
