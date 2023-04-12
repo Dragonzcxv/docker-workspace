@@ -22,10 +22,39 @@ services:
       projects:
         # Можно добавить домены проектов, чтобы можно было на них стучать из php контейнера
         # aliases:
-        #   - projects.localhost
-        #   - projects.localhost
+        #   - project.localhost
+        #   - project.localhost
+
+  php-8.2:
+    depends_on:
+      - nginx
+    build:
+      context: images/php/8.2
+      dockerfile: Dockerfile
+      args:
+        TZ: ${WORKSPACE_TIMEZONE}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+    working_dir: /www/projects
+    container_name: php-8.2
+    volumes:
+      - ./projects:/www/projects
+    ports:
+      - "${PHP_8_2_PORT}:9000"
+    networks:
+      - projects
+
+  chromedriver:
+    container_name: chromedriver
+    image: selenium/standalone-chrome
+    ports:
+      - 4444:4444
+    networks:
+      - projects
 
   php-8.0:
+    depends_on:
+      - nginx
     build:
       context: images/php/8.0
       dockerfile: Dockerfile
@@ -39,11 +68,12 @@ services:
       - ./projects:/www/projects
     ports:
       - "${PHP_8_0_PORT}:9000"
-      - "25:25"
     networks:
       - projects
 
   php-7.3:
+    depends_on:
+      - nginx
     build:
       context: images/php/7.3
       dockerfile: Dockerfile
