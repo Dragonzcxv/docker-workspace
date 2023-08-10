@@ -21,6 +21,6 @@
 4. В projects создаём свой проект.
 5. В nginx добавляем конфиг для своего проекта
 6. Прописываем в hosts имя своего домена
-7. docker-compose build && docker-compose up
+7. docker compose build && docker compose up
 
 Готово! Можно работать. Ненужные контейнеры можно закоментировать в docker-compose
