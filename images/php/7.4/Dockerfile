@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:7.4-fpm
 
 ARG USER_UID USER_GID TZ
 
@@ -13,8 +13,6 @@ RUN apt-get update && apt-get install -y \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         mc \
-		autoconf \
-		make \
         libwebp-dev \
         libzip-dev && \
     pecl install mcrypt-1.0.5 && \
@@ -23,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install pdo_mysql && \
     docker-php-ext-install zip && \
 	docker-php-ext-enable mcrypt && \
-	docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-webp-dir=/usr && \
+    docker-php-ext-configure gd --enable-gd --prefix=/usr --with-freetype --with-jpeg --with-webp && \
 	docker-php-ext-install gd
 
 # Устанавливаем композер
