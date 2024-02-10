@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 ARG USER_UID USER_GID TZ
 
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
         libzip-dev \
         libicu-dev \
         sendmail && \
-    pecl install mcrypt-1.0.6 && \
+    pecl install mcrypt-1.0.7 && \
     docker-php-ext-install iconv && \
     docker-php-ext-install mysqli && \
     docker-php-ext-install pdo_mysql && \

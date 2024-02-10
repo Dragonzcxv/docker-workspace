@@ -5,11 +5,13 @@ networks:
 
 services:
   nginx:
+    # nginx может стартануть до php контейнеров, поэтому необходимые стоит указать тут
     depends_on:
-      - php-8.2
-      - php-8.0
-      - php-7.4
-      - php-7.3
+      # - php-8.3
+      # - php-8.2
+      # - php-8.0
+      # - php-7.4
+      # - php-7.3
     build:
       context: images/nginx/1.22
       dockerfile: Dockerfile
@@ -19,15 +21,34 @@ services:
     working_dir: /www/projects
     ports:
       - "${NGINX_PORT}:80"
+      - "${NGINX_SSL_PORT}:443"
     volumes:
       - ./projects:/www/projects
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/logs:/var/log/nginx/
+      - ./nginx/ssl:/var/ssl/
     networks:
       projects:
         # Можно добавить домены проектов, чтобы они были доступны из php контейнеров
         # aliases:
         #   - project.localhost
+
+  php-8.3:
+    build:
+      context: images/php/8.3
+      dockerfile: Dockerfile
+      args:
+        TZ: ${WORKSPACE_TIMEZONE}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+    working_dir: /www/projects
+    container_name: php-8.3
+    volumes:
+      - ./projects:/www/projects
+    ports:
+      - "${PHP_8_3_PORT}:9000"
+    networks:
+      - projects
 
   php-8.2:
     build:

@@ -8,6 +8,10 @@ if [ "$NGINX_ACTIVE" = "true" ]; then
 fi
 
 # Проверяем php
+if [ "$PHP_8_3_ACTIVE" = "true" ]; then
+  comand+=" php-8.3"
+fi
+
 if [ "$PHP_8_2_ACTIVE" = "true" ]; then
   comand+=" php-8.2"
 fi
