@@ -1,5 +1,3 @@
-version: '3'
-
 networks:
   projects:
 
@@ -7,7 +5,7 @@ services:
   nginx:
     # nginx может стартануть до php контейнеров, поэтому необходимые стоит указать тут
     depends_on:
-      # - php-8.3
+      - php-8.3
       # - php-8.2
       # - php-8.0
       # - php-7.4

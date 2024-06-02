@@ -31,7 +31,8 @@ RUN apt-get update && apt-get install -y \
 	docker-php-ext-configure pcntl --enable-pcntl && \
 	docker-php-ext-install pcntl && \
     docker-php-ext-configure intl && \
-    docker-php-ext-install intl
+    docker-php-ext-install intl && \
+    docker-php-ext-install exif
 
 # Настраиваем sendmail
 RUN echo "sendmail_path=/usr/sbin/sendmail -t -i -f postmaster@mydomen.ru" >> /usr/local/etc/php/conf.d/sendmail.ini 

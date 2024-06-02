@@ -8,3 +8,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Меняем uid и gid пользователя node(создаётся автоматически в контейнере)
 RUN usermod  --uid $USER_UID node
 RUN groupmod --gid $USER_GID node
+
+# Устанавливаем доп пакеты
+RUN npm install pm2@latest -g
